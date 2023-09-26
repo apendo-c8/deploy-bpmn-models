@@ -1,0 +1,25 @@
+name: 'Deploy BPMN models'
+description: 'GitHub Action for automated deployment of BPMN models to a Camunda cluster'
+author: 'Kristoffer Högberg'
+
+inputs:
+  source:
+    description: 'Path to BPMN models'
+    required: true
+  client_id:
+    description: 'Zeebe client id'
+    required: true
+  client_secret:
+    description: 'Zeebe client secret'
+    required: true
+  cluster_id:
+    description: 'Camunda cluster id'
+    required: true
+
+runs:
+  using: 'node20'
+  main: 'dist/comp/index.js'
+
+branding:
+  icon: 'activity'
+  color: 'green'

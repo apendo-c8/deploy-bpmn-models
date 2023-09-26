@@ -1,0 +1,21 @@
+{
+  "name": "deploy-bpmn-models",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && ncc build lib/index.js -o dist/comp",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@vercel/ncc": "^0.38.0",
+    "zeebe-node": "^8.2.5"
+  }
+}
