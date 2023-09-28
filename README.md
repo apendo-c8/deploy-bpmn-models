@@ -16,7 +16,7 @@ You can simply refer to this GitHub action in any GitHub workflow:
 - name: Deploy BPMN models
   uses: apendo-c8/deploy-bpmn-models@v1
   with:
-    source: 'your-tag-name'
+    source: 'Path to BPMN models folder'
     client_id: 'Zeebe client id'
     client_secret: 'Zeebe client secret'
     cluster_id: 'Zeebe cluster id'
