@@ -63,9 +63,7 @@ const deployBpmnModel = async () => {
     try {
         const filenames = await getFilenamesInFolder(SOURCE);
         for (const file of filenames) {
-            console.log("File: " + file);
             if (file.trim() !== '.bpmnlintrc') {
-                console.log("Files. " + file);
                 const res = await zbc.deployProcess(path.join(SOURCE, file));
                 console.log(res);
             }
