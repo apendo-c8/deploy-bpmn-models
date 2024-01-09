@@ -52,7 +52,7 @@ const SOURCE = (0, core_1.getInput)('source');
 const REGION = (0, core_1.getInput)('cluster_region');
 let zbc;
 if (CONNECTION_TYPE === 'cloud') {
-    const zbc = new zeebe_node_1.ZBClient({
+    zbc = new zeebe_node_1.ZBClient({
         camundaCloud: {
             clientId: ZEEBE_CLIENT_ID,
             clientSecret: ZEEBE_CLIENT_SECRET,
@@ -62,7 +62,7 @@ if (CONNECTION_TYPE === 'cloud') {
     });
 }
 else if (CONNECTION_TYPE === 'self-managed') {
-    const zbc = new zeebe_node_1.ZBClient({
+    zbc = new zeebe_node_1.ZBClient({
         oAuth: {
             url: OAUTH_URL,
             audience: AUDIENCE,
@@ -92,7 +92,6 @@ const deployBpmnModel = async () => {
         const filenames = await getFilenamesInFolder(SOURCE);
         for (const file of filenames) {
             if (file.trim() !== '.bpmnlintrc') {
-                // @ts-ignore
                 const res = await zbc.deployProcess(path.join(SOURCE, file));
                 console.log(res);
             }
@@ -113,13 +112,11 @@ const runWorkflow = async () => {
 runWorkflow()
     .then(() => {
     console.log("Workflow completed successfully.");
-    // @ts-ignore
     zbc.close().then(r => {
     });
 })
     .catch((error) => {
     console.error("Workflow failed:", error);
-    // @ts-ignore
     zbc.close().then(r => {
     });
 });
