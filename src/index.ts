@@ -21,15 +21,25 @@ const SOURCE = getInput('source');
 
 
 const zbc = new ZBClient({
-    oAuth: {
-        url: 'https://akstest.apendo.se/auth/realms/camunda-platform/protocol/openid-connect/token',
-        audience: 'zeebe-api',
-        clientId: 'zeebe',
-        clientSecret: '9fx1sSVZ4R',
+    camundaCloud: {
+        clientId: ZEEBE_CLIENT_ID,
+        clientSecret: ZEEBE_CLIENT_SECRET,
+        clusterId: CAMUNDA_CLUSTER_ID,
+        clusterRegion: "bru-2",
     },
-    hostname: 'akstest.apendo.se',
-    port: '443'
 });
+
+
+// const zbc = new ZBClient({
+//     oAuth: {
+//         url: 'https://akstest.apendo.se/auth/realms/camunda-platform/protocol/openid-connect/token',
+//         audience: 'zeebe-api',
+//         clientId: 'zeebe',
+//         clientSecret: '9fx1sSVZ4R',
+//     },
+//     hostname: 'akstest.apendo.se',
+//     port: '443'
+// });
 
 
 const getFilenamesInFolder = async (folderPath: string): Promise<string[]> => {
