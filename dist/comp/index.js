@@ -37,18 +37,41 @@ const zeebe_node_1 = __nccwpck_require__(2811);
 const core_1 = __nccwpck_require__(2186);
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const path = __importStar(__nccwpck_require__(1017));
-const ZEEBE_CLIENT_ID = (0, core_1.getInput)('client_id');
-const ZEEBE_CLIENT_SECRET = (0, core_1.getInput)('client_secret');
+// General inputs
+const CONNECTION_TYPE = (0, core_1.getInput)('connection_type');
+const ZEEBE_CLIENT_ID = (0, core_1.getInput)('zeebe_client_id');
+const ZEEBE_CLIENT_SECRET = (0, core_1.getInput)('zeebe_client_secret');
+// Self-managed inputs
+const PORT = (0, core_1.getInput)('port');
+const HOSTNAME = (0, core_1.getInput)('host_name');
+const OAUTH_URL = (0, core_1.getInput)('oauth_url');
+const AUDIENCE = (0, core_1.getInput)('audience');
+// SaaS inputs
 const CAMUNDA_CLUSTER_ID = (0, core_1.getInput)('cluster_id');
 const SOURCE = (0, core_1.getInput)('source');
-const zbc = new zeebe_node_1.ZBClient({
-    camundaCloud: {
-        clientId: ZEEBE_CLIENT_ID,
-        clientSecret: ZEEBE_CLIENT_SECRET,
-        clusterId: CAMUNDA_CLUSTER_ID,
-        clusterRegion: "bru-2",
-    },
-});
+let zbc;
+if (CONNECTION_TYPE === 'cloud') {
+    zbc = new zeebe_node_1.ZBClient({
+        camundaCloud: {
+            clientId: ZEEBE_CLIENT_ID,
+            clientSecret: ZEEBE_CLIENT_SECRET,
+            clusterId: CAMUNDA_CLUSTER_ID,
+            clusterRegion: "bru-2",
+        },
+    });
+}
+else if (CONNECTION_TYPE === 'self-managed') {
+    zbc = new zeebe_node_1.ZBClient({
+        oAuth: {
+            url: OAUTH_URL,
+            audience: AUDIENCE,
+            clientId: ZEEBE_CLIENT_ID,
+            clientSecret: ZEEBE_CLIENT_SECRET,
+        },
+        hostname: HOSTNAME,
+        port: PORT
+    });
+}
 const getFilenamesInFolder = async (folderPath) => {
     try {
         const files = await fs_1.default.promises.readdir(folderPath);
@@ -64,6 +87,7 @@ const deployBpmnModel = async () => {
         const filenames = await getFilenamesInFolder(SOURCE);
         for (const file of filenames) {
             if (file.trim() !== '.bpmnlintrc') {
+                // @ts-ignore
                 const res = await zbc.deployProcess(path.join(SOURCE, file));
                 console.log(res);
             }
@@ -84,11 +108,13 @@ const runWorkflow = async () => {
 runWorkflow()
     .then(() => {
     console.log("Workflow completed successfully.");
+    // @ts-ignore
     zbc.close().then(r => {
     });
 })
     .catch((error) => {
     console.error("Workflow failed:", error);
+    // @ts-ignore
     zbc.close().then(r => {
     });
 });
