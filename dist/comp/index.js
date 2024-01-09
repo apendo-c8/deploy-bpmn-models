@@ -50,24 +50,27 @@ const AUDIENCE = (0, core_1.getInput)('audience');
 const CAMUNDA_CLUSTER_ID = (0, core_1.getInput)('cluster_id');
 const SOURCE = (0, core_1.getInput)('source');
 const REGION = (0, core_1.getInput)('cluster_region');
+// const zbc = new ZBClient({
+//     camundaCloud: {
+//         clientId: ZEEBE_CLIENT_ID,
+//         clientSecret: ZEEBE_CLIENT_SECRET,
+//         clusterId: CAMUNDA_CLUSTER_ID,
+//         clusterRegion: REGION,
+//     },
+// });
 const zbc = new zeebe_node_1.ZBClient({
-    camundaCloud: {
+    oAuth: {
+        url: OAUTH_URL,
+        audience: AUDIENCE,
         clientId: ZEEBE_CLIENT_ID,
         clientSecret: ZEEBE_CLIENT_SECRET,
-        clusterId: CAMUNDA_CLUSTER_ID,
-        clusterRegion: REGION,
     },
+    hostname: HOSTNAME,
+    port: PORT
 });
-// const zbc = new ZBClient({
-//     oAuth: {
-//         url: 'https://akstest.apendo.se/auth/realms/camunda-platform/protocol/openid-connect/token',
-//         audience: 'zeebe-api',
-//         clientId: 'zeebe',
-//         clientSecret: '9fx1sSVZ4R',
-//     },
-//     hostname: 'akstest.apendo.se',
-//     port: '443'
-// });
+zbc.topology()
+    .catch(console.error)
+    .then(res => console.log(JSON.stringify(res, null, 2)));
 const getFilenamesInFolder = async (folderPath) => {
     try {
         const files = await fs_1.default.promises.readdir(folderPath);

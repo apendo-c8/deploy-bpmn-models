@@ -21,26 +21,30 @@ const SOURCE = getInput('source');
 const REGION = getInput('cluster_region')
 
 
+// const zbc = new ZBClient({
+//     camundaCloud: {
+//         clientId: ZEEBE_CLIENT_ID,
+//         clientSecret: ZEEBE_CLIENT_SECRET,
+//         clusterId: CAMUNDA_CLUSTER_ID,
+//         clusterRegion: REGION,
+//     },
+// });
+
+
 const zbc = new ZBClient({
-    camundaCloud: {
+    oAuth: {
+        url: OAUTH_URL,
+        audience: AUDIENCE,
         clientId: ZEEBE_CLIENT_ID,
         clientSecret: ZEEBE_CLIENT_SECRET,
-        clusterId: CAMUNDA_CLUSTER_ID,
-        clusterRegion: REGION,
     },
+    hostname: HOSTNAME,
+    port: PORT
 });
 
-
-// const zbc = new ZBClient({
-//     oAuth: {
-//         url: 'https://akstest.apendo.se/auth/realms/camunda-platform/protocol/openid-connect/token',
-//         audience: 'zeebe-api',
-//         clientId: 'zeebe',
-//         clientSecret: '9fx1sSVZ4R',
-//     },
-//     hostname: 'akstest.apendo.se',
-//     port: '443'
-// });
+zbc.topology()
+    .catch(console.error)
+    .then(res => console.log(JSON.stringify(res, null, 2)))
 
 
 const getFilenamesInFolder = async (folderPath: string): Promise<string[]> => {
@@ -76,7 +80,7 @@ const deployBpmnModel = async () => {
 }
 
 
-    const runWorkflow = async () => {
+const runWorkflow = async () => {
 
     try {
 
