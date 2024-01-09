@@ -22,6 +22,8 @@ const SOURCE = getInput('source');
 let zbc: ZBClient | undefined;
 
 if (CONNECTION_TYPE === 'cloud') {
+    console.log('INSIDE CLOUD')
+
     zbc = new ZBClient({
         camundaCloud: {
             clientId: ZEEBE_CLIENT_ID,
@@ -31,6 +33,9 @@ if (CONNECTION_TYPE === 'cloud') {
         },
     });
 } else if (CONNECTION_TYPE === 'self-managed') {
+
+    console.log('INSIDE SELF -MANAGED')
+
     zbc = new ZBClient({
         oAuth: {
             url: OAUTH_URL,
@@ -42,6 +47,9 @@ if (CONNECTION_TYPE === 'cloud') {
         port: PORT
     });
 
+} else {
+    console.error('Invalid connection_type specified.');
+    process.exit(1);
 }
 
 

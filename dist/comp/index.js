@@ -51,6 +51,7 @@ const CAMUNDA_CLUSTER_ID = (0, core_1.getInput)('cluster_id');
 const SOURCE = (0, core_1.getInput)('source');
 let zbc;
 if (CONNECTION_TYPE === 'cloud') {
+    console.log('INSIDE CLOUD');
     zbc = new zeebe_node_1.ZBClient({
         camundaCloud: {
             clientId: ZEEBE_CLIENT_ID,
@@ -61,6 +62,7 @@ if (CONNECTION_TYPE === 'cloud') {
     });
 }
 else if (CONNECTION_TYPE === 'self-managed') {
+    console.log('INSIDE SELF -MANAGED');
     zbc = new zeebe_node_1.ZBClient({
         oAuth: {
             url: OAUTH_URL,
@@ -71,6 +73,10 @@ else if (CONNECTION_TYPE === 'self-managed') {
         hostname: HOSTNAME,
         port: PORT
     });
+}
+else {
+    console.error('Invalid connection_type specified.');
+    process.exit(1);
 }
 const getFilenamesInFolder = async (folderPath) => {
     try {
