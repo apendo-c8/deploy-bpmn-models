@@ -3,19 +3,46 @@ import {getInput, setFailed} from "@actions/core";
 import fs from 'fs';
 import * as path from "path";
 
-const ZEEBE_CLIENT_ID = getInput('client_id')
-const ZEEBE_CLIENT_SECRET = getInput('client_secret')
+
+// General inputs
+const CONNECTION_TYPE = getInput('connection_type');
+const ZEEBE_CLIENT_ID = getInput('zeebe_client_id')
+const ZEEBE_CLIENT_SECRET = getInput('zeebe_client_secret')
+
+// Self-managed inputs
+const PORT = getInput('port');
+const HOSTNAME = getInput('host_name');
+const OAUTH_URL = getInput('oauth_url');
+const AUDIENCE = getInput('audience');
+
+// SaaS inputs
 const CAMUNDA_CLUSTER_ID = getInput('cluster_id')
 const SOURCE = getInput('source');
 
-const zbc = new ZBClient({
-    camundaCloud: {
-        clientId: ZEEBE_CLIENT_ID,
-        clientSecret: ZEEBE_CLIENT_SECRET,
-        clusterId: CAMUNDA_CLUSTER_ID,
-        clusterRegion: "bru-2",
-    },
-});
+let zbc: ZBClient | undefined;
+
+if (CONNECTION_TYPE === 'cloud') {
+    zbc = new ZBClient({
+        camundaCloud: {
+            clientId: ZEEBE_CLIENT_ID,
+            clientSecret: ZEEBE_CLIENT_SECRET,
+            clusterId: CAMUNDA_CLUSTER_ID,
+            clusterRegion: "bru-2",
+        },
+    });
+} else if (CONNECTION_TYPE === 'self-managed') {
+    zbc = new ZBClient({
+        oAuth: {
+            url: OAUTH_URL,
+            audience: AUDIENCE,
+            clientId: ZEEBE_CLIENT_ID,
+            clientSecret: ZEEBE_CLIENT_SECRET,
+        },
+        hostname: HOSTNAME,
+        port: PORT
+    });
+
+}
 
 
 const getFilenamesInFolder = async (folderPath: string): Promise<string[]> => {
@@ -37,6 +64,7 @@ const deployBpmnModel = async () => {
         for (const file of filenames) {
 
             if (file.trim() !== '.bpmnlintrc') {
+                // @ts-ignore
                 const res = await zbc.deployProcess(path.join(SOURCE, file));
                 console.log(res);
             }
@@ -66,11 +94,13 @@ const runWorkflow = async () => {
 runWorkflow()
     .then(() => {
         console.log("Workflow completed successfully.");
+        // @ts-ignore
         zbc.close().then(r => {
         });
     })
     .catch((error) => {
         console.error("Workflow failed:", error)
+        // @ts-ignore
         zbc.close().then(r => {
         });
     });

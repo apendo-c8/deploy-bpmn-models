@@ -3,18 +3,33 @@ description: 'GitHub Action for automated deployment of BPMN models to a Camunda
 author: 'Kristoffer Högberg'
 
 inputs:
+  connection_type:
+    description: 'Choose: cloud or self-managed'
+    required: true
   source:
     description: 'Path to BPMN models'
     required: true
-  client_id:
+  zeebe_client_id:
     description: 'Zeebe client id'
     required: true
-  client_secret:
+  zeebe_client_secret:
     description: 'Zeebe client secret'
     required: true
   cluster_id:
-    description: 'Camunda cluster id'
-    required: true
+    description: 'Camunda cloud cluster id'
+    required: false
+  oauth_url:
+    description: 'Authentication url'
+    required: false
+  host_name:
+    description: 'The self-manged cluster host name'
+    required: false
+  port:
+    description: 'The self-managed cluster port (typically 443)'
+    required: false
+  audience:
+    description: 'Zeebe client audience'
+    required: false
 
 runs:
   using: 'node20'
