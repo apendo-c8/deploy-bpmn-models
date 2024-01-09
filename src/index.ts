@@ -33,7 +33,6 @@ if (CONNECTION_TYPE === 'cloud') {
     });
 } else if (CONNECTION_TYPE === 'self-managed') {
 
-
     const zbc = new ZBClient({
         oAuth: {
             url: OAUTH_URL,
