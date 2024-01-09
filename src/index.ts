@@ -18,6 +18,7 @@ const AUDIENCE = getInput('audience');
 // SaaS inputs
 const CAMUNDA_CLUSTER_ID = getInput('cluster_id')
 const SOURCE = getInput('source');
+const REGION = getInput('cluster_region')
 
 
 const zbc = new ZBClient({
@@ -25,7 +26,7 @@ const zbc = new ZBClient({
         clientId: ZEEBE_CLIENT_ID,
         clientSecret: ZEEBE_CLIENT_SECRET,
         clusterId: CAMUNDA_CLUSTER_ID,
-        clusterRegion: "bru-2",
+        clusterRegion: REGION,
     },
 });
 
@@ -75,35 +76,26 @@ const deployBpmnModel = async () => {
 }
 
 
-deployBpmnModel()
+    const runWorkflow = async () => {
+
+    try {
+
+        await deployBpmnModel();
+
+    } catch (error) {
+        setFailed(error instanceof Error ? error.message : 'An error occurred');
+    }
+
+}
+
+runWorkflow()
     .then(() => {
-        console.log('Workflow definition deployed successfully.');
+        console.log("Workflow completed successfully.");
+        zbc.close().then(r => {
+        });
     })
-    .catch(error => {
-        console.error('Error deploying workflow definition:', error);
+    .catch((error) => {
+        console.error("Workflow failed:", error)
+        zbc.close().then(r => {
+        });
     });
-
-
-// const runWorkflow = async () => {
-//
-//     try {
-//
-//         await deployBpmnModel();
-//
-//     } catch (error) {
-//         setFailed(error instanceof Error ? error.message : 'An error occurred');
-//     }
-//
-// }
-//
-// runWorkflow()
-//     .then(() => {
-//         console.log("Workflow completed successfully.");
-//         zbc.close().then(r => {
-//         });
-//     })
-//     .catch((error) => {
-//         console.error("Workflow failed:", error)
-//         zbc.close().then(r => {
-//         });
-//     });

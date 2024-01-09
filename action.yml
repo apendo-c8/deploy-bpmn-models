@@ -18,6 +18,9 @@ inputs:
   cluster_id:
     description: 'Camunda cloud cluster id'
     required: false
+  cluster_region:
+    description: 'Camunda cluster region'
+    required: false
   oauth_url:
     description: 'Authentication url'
     required: false
