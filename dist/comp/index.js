@@ -49,47 +49,15 @@ const AUDIENCE = (0, core_1.getInput)('audience');
 // SaaS inputs
 const CAMUNDA_CLUSTER_ID = (0, core_1.getInput)('cluster_id');
 const SOURCE = (0, core_1.getInput)('source');
-// let zbc: ZBClient | undefined;
-//
-// if (CONNECTION_TYPE === 'cloud') {
-//     console.log('INSIDE CLOUD')
-//
-//     zbc = new ZBClient({
-//         camundaCloud: {
-//             clientId: ZEEBE_CLIENT_ID,
-//             clientSecret: ZEEBE_CLIENT_SECRET,
-//             clusterId: CAMUNDA_CLUSTER_ID,
-//             clusterRegion: "bru-2",
-//         },
-//     });
-// } else if (CONNECTION_TYPE === 'self-managed') {
-//
-//     console.log('INSIDE SELF -MANAGED')
-//
-//     zbc = new ZBClient({
-//         oAuth: {
-//             url: OAUTH_URL,
-//             audience: AUDIENCE,
-//             clientId: ZEEBE_CLIENT_ID,
-//             clientSecret: ZEEBE_CLIENT_SECRET,
-//         },
-//         hostname: HOSTNAME,
-//         port: PORT
-//     });
-//
-// } else {
-//     console.error('Invalid connection_type specified.');
-//     process.exit(1);
-// }
 const zbc = new zeebe_node_1.ZBClient({
     oAuth: {
-        url: OAUTH_URL,
-        audience: AUDIENCE,
-        clientId: ZEEBE_CLIENT_ID,
-        clientSecret: ZEEBE_CLIENT_SECRET,
+        url: 'https://akstest.apendo.se/auth/realms/camunda-platform/protocol/openid-connect/token',
+        audience: 'zeebe-api',
+        clientId: 'zeebe',
+        clientSecret: '9fx1sSVZ4R',
     },
-    hostname: HOSTNAME,
-    port: PORT
+    hostname: 'akstest.apendo.se',
+    port: '443'
 });
 const getFilenamesInFolder = async (folderPath) => {
     try {
