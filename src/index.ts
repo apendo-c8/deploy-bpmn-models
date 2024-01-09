@@ -54,13 +54,13 @@ const SOURCE = getInput('source');
 
 const zbc = new ZBClient({
     oAuth: {
-        url: "https://akstest.apendo.se/auth/realms/camunda-platform/protocol/openid-connect/token",
-        audience: "zeebe-api",
-        clientId: "zeebe",
-        clientSecret: "9fx1sSVZ4R",
+        url: OAUTH_URL,
+        audience: AUDIENCE,
+        clientId: ZEEBE_CLIENT_ID,
+        clientSecret: ZEEBE_CLIENT_SECRET,
     },
-    hostname: "akstest.apendo.se",
-    port: "443"
+    hostname: HOSTNAME,
+    port: PORT
 });
 
 const getFilenamesInFolder = async (folderPath: string): Promise<string[]> => {
@@ -82,7 +82,6 @@ const deployBpmnModel = async () => {
         for (const file of filenames) {
 
             if (file.trim() !== '.bpmnlintrc') {
-                // @ts-ignore
                 const res = await zbc.deployProcess(path.join(SOURCE, file));
                 console.log(res);
             }
@@ -97,28 +96,35 @@ const deployBpmnModel = async () => {
 }
 
 
-const runWorkflow = async () => {
-
-    try {
-
-        await deployBpmnModel();
-
-    } catch (error) {
-        setFailed(error instanceof Error ? error.message : 'An error occurred');
-    }
-
-}
-
-runWorkflow()
+deployBpmnModel()
     .then(() => {
-        console.log("Workflow completed successfully.");
-        // @ts-ignore
-        zbc.close().then(r => {
-        });
+        console.log('Workflow definition deployed successfully.');
     })
-    .catch((error) => {
-        console.error("Workflow failed:", error)
-        // @ts-ignore
-        zbc.close().then(r => {
-        });
+    .catch(error => {
+        console.error('Error deploying workflow definition:', error);
     });
+
+
+// const runWorkflow = async () => {
+//
+//     try {
+//
+//         await deployBpmnModel();
+//
+//     } catch (error) {
+//         setFailed(error instanceof Error ? error.message : 'An error occurred');
+//     }
+//
+// }
+//
+// runWorkflow()
+//     .then(() => {
+//         console.log("Workflow completed successfully.");
+//         zbc.close().then(r => {
+//         });
+//     })
+//     .catch((error) => {
+//         console.error("Workflow failed:", error)
+//         zbc.close().then(r => {
+//         });
+//     });
