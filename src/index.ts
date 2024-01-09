@@ -54,15 +54,14 @@ const SOURCE = getInput('source');
 
 const zbc = new ZBClient({
     oAuth: {
-        url: OAUTH_URL,
-        audience: AUDIENCE,
-        clientId: ZEEBE_CLIENT_ID,
-        clientSecret: ZEEBE_CLIENT_SECRET,
+        url: "https://akstest.apendo.se/auth/realms/camunda-platform/protocol/openid-connect/token",
+        audience: "zeebe-api",
+        clientId: "zeebe",
+        clientSecret: "9fx1sSVZ4R",
     },
-    hostname: HOSTNAME,
-    port: PORT
+    hostname: "akstest.apendo.se",
+    port: "443"
 });
-
 
 const getFilenamesInFolder = async (folderPath: string): Promise<string[]> => {
     try {

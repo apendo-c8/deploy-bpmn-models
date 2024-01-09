@@ -83,13 +83,13 @@ const SOURCE = (0, core_1.getInput)('source');
 // }
 const zbc = new zeebe_node_1.ZBClient({
     oAuth: {
-        url: OAUTH_URL,
-        audience: AUDIENCE,
-        clientId: ZEEBE_CLIENT_ID,
-        clientSecret: ZEEBE_CLIENT_SECRET,
+        url: "https://akstest.apendo.se/auth/realms/camunda-platform/protocol/openid-connect/token",
+        audience: "zeebe-api",
+        clientId: "zeebe",
+        clientSecret: "9fx1sSVZ4R",
     },
-    hostname: HOSTNAME,
-    port: PORT
+    hostname: "akstest.apendo.se",
+    port: "443"
 });
 const getFilenamesInFolder = async (folderPath) => {
     try {
