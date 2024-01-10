@@ -6,7 +6,7 @@ inputs:
   connection_type:
     description: 'Choose: cloud or self-managed'
     required: true
-  source:
+  bpmn_models_source:
     description: 'Path to BPMN models'
     required: true
   zeebe_client_id:
@@ -16,22 +16,22 @@ inputs:
     description: 'Zeebe client secret'
     required: true
   cluster_id:
-    description: 'Camunda cloud cluster id'
+    description: 'Camunda cloud cluster id (Camunda cloud only)'
     required: false
   cluster_region:
-    description: 'Camunda cluster region'
+    description: 'Camunda cluster region (Camunda cloud only)'
     required: false
   oauth_url:
-    description: 'Authentication url'
+    description: 'Authentication url (self-managed only)'
     required: false
   host_name:
-    description: 'The self-manged cluster host name'
+    description: 'Camunda cluster hostname (self-managed only)'
     required: false
   port:
-    description: 'The self-managed cluster port (typically 443)'
+    description: 'Camunda cluster port (self-managed only - typically 443)'
     required: false
   audience:
-    description: 'Zeebe client audience'
+    description: 'Zeebe client audience (self-managed only)'
     required: false
 
 runs:

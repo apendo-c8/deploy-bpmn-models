@@ -48,9 +48,10 @@ const OAUTH_URL = (0, core_1.getInput)('oauth_url');
 const AUDIENCE = (0, core_1.getInput)('audience');
 // SaaS inputs
 const CAMUNDA_CLUSTER_ID = (0, core_1.getInput)('cluster_id');
-const SOURCE = (0, core_1.getInput)('source');
+const BPMN_MODEL_SOURCE = (0, core_1.getInput)('bpmn_models_source');
 const REGION = (0, core_1.getInput)('cluster_region');
 let zbc;
+// Create and configure zeebe client correctly based on the connection_type input
 if (CONNECTION_TYPE === 'cloud') {
     zbc = new zeebe_node_1.ZBClient({
         camundaCloud: {
@@ -89,16 +90,20 @@ const getFilenamesInFolder = async (folderPath) => {
 };
 const deployBpmnModel = async () => {
     try {
-        const filenames = await getFilenamesInFolder(SOURCE);
+        const filenames = await getFilenamesInFolder(BPMN_MODEL_SOURCE);
         for (const file of filenames) {
             if (file.trim() !== '.bpmnlintrc') {
-                const res = await zbc.deployProcess(path.join(SOURCE, file));
+                const res = await zbc.deployProcess(path.join(BPMN_MODEL_SOURCE, file));
                 console.log(res);
             }
         }
     }
     catch (error) {
         (0, core_1.setFailed)(error instanceof Error ? error.message : 'An error occurred');
+    }
+    finally {
+        console.log('Closing Zeebe client.');
+        await zbc.close();
     }
 };
 const runWorkflow = async () => {
@@ -111,12 +116,12 @@ const runWorkflow = async () => {
 };
 runWorkflow()
     .then(() => {
-    console.log("Workflow completed successfully.");
+    console.log("Workflow run completed.");
     zbc.close().then(r => {
     });
 })
     .catch((error) => {
-    console.error("Workflow failed:", error);
+    console.error("Workflow run failed:", error);
     zbc.close().then(r => {
     });
 });
