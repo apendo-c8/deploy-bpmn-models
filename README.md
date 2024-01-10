@@ -10,13 +10,20 @@ To use this action in your workflow, follow these steps:
 
 Ensure you have the correct credentials for your Camunda cluster. [Zeebe client authorization](https://docs.camunda.io/docs/self-managed/zeebe-deployment/security/client-authorization/)
 
-You can simply refer to this GitHub action in any GitHub workflow:
+You can simply refer to this GitHub action in any GitHub workflow (note some of the inputs are cloud/self-manged specific and can be used/omitted accordingly):
 
 ```yaml
 - name: Deploy BPMN models
-  uses: apendo-c8/deploy-bpmn-models@v1
+  uses: apendo-c8/deploy-bpmn-models@v2
   with:
-    source: 'Path to BPMN models folder'
-    client_id: 'Zeebe client id'
-    client_secret: 'Zeebe client secret'
-    cluster_id: 'Zeebe cluster id'
+    connection_type: 'Choose: cloud or self-managed'
+    bpmn_models_source: 'Path to BPMN models'
+    zeebe_client_id: 'Zeebe client id'
+    zeebe_client_secret: 'Zeebe client secret'
+    cluster_id: 'Camunda cloud cluster id (Camunda cloud only)'
+    cluster_region: 'Camunda cluster region (Camunda cloud only)'
+    oauth_url: 'Authentication url (self-managed only)'
+    host_name: 'Camunda cluster hostname (self-managed only)'
+    port: 'Camunda cluster port (self-managed only - typically 443)'
+    audience: 'Zeebe client audience (self-managed only)'
+
