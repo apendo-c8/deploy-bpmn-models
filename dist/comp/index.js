@@ -37,18 +37,47 @@ const zeebe_node_1 = __nccwpck_require__(2811);
 const core_1 = __nccwpck_require__(2186);
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const path = __importStar(__nccwpck_require__(1017));
-const ZEEBE_CLIENT_ID = (0, core_1.getInput)('client_id');
-const ZEEBE_CLIENT_SECRET = (0, core_1.getInput)('client_secret');
+// General inputs
+const CONNECTION_TYPE = (0, core_1.getInput)('connection_type');
+const ZEEBE_CLIENT_ID = (0, core_1.getInput)('zeebe_client_id');
+const ZEEBE_CLIENT_SECRET = (0, core_1.getInput)('zeebe_client_secret');
+// Self-managed inputs
+const PORT = (0, core_1.getInput)('port');
+const HOSTNAME = (0, core_1.getInput)('host_name');
+const OAUTH_URL = (0, core_1.getInput)('oauth_url');
+const AUDIENCE = (0, core_1.getInput)('audience');
+// SaaS inputs
 const CAMUNDA_CLUSTER_ID = (0, core_1.getInput)('cluster_id');
-const SOURCE = (0, core_1.getInput)('source');
-const zbc = new zeebe_node_1.ZBClient({
-    camundaCloud: {
-        clientId: ZEEBE_CLIENT_ID,
-        clientSecret: ZEEBE_CLIENT_SECRET,
-        clusterId: CAMUNDA_CLUSTER_ID,
-        clusterRegion: "bru-2",
-    },
-});
+const BPMN_MODEL_SOURCE = (0, core_1.getInput)('bpmn_models_source');
+const REGION = (0, core_1.getInput)('cluster_region');
+let zbc;
+// Create and configure zeebe client correctly based on the connection_type input
+if (CONNECTION_TYPE === 'cloud') {
+    zbc = new zeebe_node_1.ZBClient({
+        camundaCloud: {
+            clientId: ZEEBE_CLIENT_ID,
+            clientSecret: ZEEBE_CLIENT_SECRET,
+            clusterId: CAMUNDA_CLUSTER_ID,
+            clusterRegion: REGION,
+        },
+    });
+}
+else if (CONNECTION_TYPE === 'self-managed') {
+    zbc = new zeebe_node_1.ZBClient({
+        oAuth: {
+            url: OAUTH_URL,
+            audience: AUDIENCE,
+            clientId: ZEEBE_CLIENT_ID,
+            clientSecret: ZEEBE_CLIENT_SECRET,
+        },
+        hostname: HOSTNAME,
+        port: PORT
+    });
+}
+else {
+    console.error('Invalid connection_type specified.');
+    process.exit(1);
+}
 const getFilenamesInFolder = async (folderPath) => {
     try {
         const files = await fs_1.default.promises.readdir(folderPath);
@@ -56,21 +85,25 @@ const getFilenamesInFolder = async (folderPath) => {
     }
     catch (error) {
         console.error('Error reading folder:', error);
-        return [];
+        process.exit(1);
     }
 };
 const deployBpmnModel = async () => {
     try {
-        const filenames = await getFilenamesInFolder(SOURCE);
+        const filenames = await getFilenamesInFolder(BPMN_MODEL_SOURCE);
         for (const file of filenames) {
             if (file.trim() !== '.bpmnlintrc') {
-                const res = await zbc.deployProcess(path.join(SOURCE, file));
+                const res = await zbc.deployProcess(path.join(BPMN_MODEL_SOURCE, file));
                 console.log(res);
             }
         }
     }
     catch (error) {
         (0, core_1.setFailed)(error instanceof Error ? error.message : 'An error occurred');
+    }
+    finally {
+        console.log('Closing Zeebe client.');
+        await zbc.close();
     }
 };
 const runWorkflow = async () => {
@@ -83,12 +116,12 @@ const runWorkflow = async () => {
 };
 runWorkflow()
     .then(() => {
-    console.log("Workflow completed successfully.");
+    console.log("Workflow run completed.");
     zbc.close().then(r => {
     });
 })
     .catch((error) => {
-    console.error("Workflow failed:", error);
+    console.error("Workflow run failed:", error);
     zbc.close().then(r => {
     });
 });
