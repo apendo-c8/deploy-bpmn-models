@@ -56,7 +56,8 @@ const getFilenamesInFolder = async (folderPath: string): Promise<string[]> => {
         return files.filter((file) => file.endsWith('.bpmn') && file !== '.bpmnlintrc');
     } catch (error) {
         console.error('Error reading folder:', error);
-        return [];
+        process.exit(1)
+        // return [];
     }
 };
 
@@ -76,7 +77,6 @@ const deployBpmnModel = async () => {
 
 
     } catch (error) {
-
         setFailed(error instanceof Error ? error.message : 'An error occurred');
     } finally {
         console.log('Closing Zeebe client.');
