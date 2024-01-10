@@ -86,7 +86,6 @@ const getFilenamesInFolder = async (folderPath) => {
     catch (error) {
         console.error('Error reading folder:', error);
         process.exit(1);
-        // return [];
     }
 };
 const deployBpmnModel = async () => {

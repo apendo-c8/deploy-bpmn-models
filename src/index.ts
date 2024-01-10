@@ -57,7 +57,6 @@ const getFilenamesInFolder = async (folderPath: string): Promise<string[]> => {
     } catch (error) {
         console.error('Error reading folder:', error);
         process.exit(1)
-        // return [];
     }
 };
 
